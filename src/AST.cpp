@@ -1,14 +1,14 @@
 #include "AST.hpp"
 #include <iostream>
 
-Method::Method(const std::string& methodName) : name(methodName) {}
+Method::Method(const std::string& methodName, const std::string& accessSpecifier) : name(methodName), accessSpecifier{accessSpecifier} {}
 
 PythonClass::PythonClass(const std::string& name) : className(name) {}
 void PythonClass::addBaseClass(const std::string& baseClass) {
     baseClasses.push_back(baseClass);
 }
-void PythonClass::addMethod(const std::string& methodName) {
-    methods.push_back(Method(methodName));
+void PythonClass::addMethod(const std::string& methodName, const std::string& accessSpecifier) {
+    methods.push_back(Method{methodName, accessSpecifier});
 }
 
 void AST::addClass(const PythonClass& pyClass) {
@@ -26,7 +26,7 @@ void AST::printAST() const {
         }
         std::cout << "  Methods: \n";
         for (const auto& method : pyClass.methods) {
-            std::cout << " * " << method.name << "\n";
+            std::cout << method.accessSpecifier << " " << method.name << "\n";
         }
         std::cout << "----------------------------------\n";
     }

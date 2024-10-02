@@ -10,6 +10,7 @@
 
 nlohmann::json buildASTFromJson(std::string& jsonString, AST& ast) {
     auto json = nlohmann::json::parse(jsonString);
+    
     for (const auto& classInfo : json) {
         PythonClass pyClass(classInfo["class_name"]);
         
@@ -18,13 +19,18 @@ nlohmann::json buildASTFromJson(std::string& jsonString, AST& ast) {
         }
         
         for (const auto& method : classInfo["methods"]) {
-            pyClass.addMethod(method);
+            std::string methodName = method["name"];
+            std::string accessSpecifier = method["access_specifier"];
+            
+            pyClass.addMethod(methodName, accessSpecifier);
         }
         
         ast.addClass(pyClass);
     }
+    
     return json;
 }
+
 
 int main() {
     PythonParser parser;
@@ -34,7 +40,6 @@ int main() {
     auto parsed = buildASTFromJson(jsonAst, ast);
 
     ast.printAST();
-
     UMLGenerator umlGen;
     umlGen.generateUML(ast);
 

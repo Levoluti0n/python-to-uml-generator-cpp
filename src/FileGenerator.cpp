@@ -22,7 +22,7 @@ void FileGenerator::generateDotFile(const nlohmann::json& classData) {
         std::cerr << "[-] Failed to open " << dotFilePath << " for writing." << std::endl;
         return;
     }
-
+    
     dotFile << "digraph G {\n";
     dotFile << "    node [shape=box];\n";
 
@@ -32,12 +32,24 @@ void FileGenerator::generateDotFile(const nlohmann::json& classData) {
         dotFile << "Methods:\\n";
 
         for (const auto& method : cls["methods"]) {
-            dotFile << method.get<std::string>() << "\\n";
+            std::string methodName = method["name"];
+            std::string accessSpecifier = method["access_specifier"];
+            std::string methodSymbol;
+
+            if (accessSpecifier == "public") {
+                methodSymbol = "+";
+            } else if (accessSpecifier == "protected") {
+                methodSymbol = "#";
+            } else if (accessSpecifier == "private") {
+                methodSymbol = "-";
+            }
+
+            dotFile << methodSymbol << " " << methodName << "\\n";
         }
         dotFile << "\"];\n";
 
         for (const auto& base : cls["bases"]) {
-            dotFile << "    " << base.get<std::string>() << " -> " << className << ";\n";
+            dotFile << "    " << base << " -> " << className << ";\n";
         }
     }
 

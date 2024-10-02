@@ -7,7 +7,8 @@
 class Method {
 public:
     std::string name;
-    Method(const std::string&);
+    std::string accessSpecifier;
+    Method(const std::string&, const std::string&);
 };
 
 class PythonClass {
@@ -19,7 +20,7 @@ public:
     PythonClass(const std::string&);
 
     void addBaseClass(const std::string&);
-    void addMethod(const std::string&);
+    void addMethod(const std::string&, const std::string&);
 };
 
 class AST {
